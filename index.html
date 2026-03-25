@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>AURA FASHION | Future of Retail</title>
+    <!-- Standard Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-lowest": "#ffffff",
+              "surface-container": "#eeeeee",
+              "on-primary-container": "#ffffff",
+              "on-tertiary-fixed-variant": "#dce1ff",
+              "inverse-surface": "#2f3131",
+              "secondary-fixed": "#b6c4ff",
+              "primary-fixed-dim": "#474747",
+              "secondary-fixed-dim": "#90a7ff",
+              "surface-variant": "#e2e2e2",
+              "tertiary-fixed": "#004dea",
+              "tertiary-container": "#3467ff",
+              "error-container": "#ffdad6",
+              "surface-dim": "#dadada",
+              "surface-tint": "#5e5e5e",
+              "surface-bright": "#f9f9f9",
+              "on-error-container": "#410002",
+              "on-surface": "#1a1c1c",
+              "inverse-on-surface": "#f1f1f1",
+              "secondary-container": "#c9d2ff",
+              "on-tertiary-fixed": "#ffffff",
+              "on-secondary-fixed-variant": "#003099",
+              "on-primary-fixed-variant": "#e2e2e2",
+              "primary": "#000000",
+              "on-error": "#ffffff",
+              "on-primary": "#e2e2e2",
+              "on-secondary": "#ffffff",
+              "surface": "#f9f9f9",
+              "error": "#ba1a1a",
+              "on-tertiary": "#dce1ff",
+              "background": "#f9f9f9",
+              "tertiary": "#003099",
+              "primary-fixed": "#5e5e5e",
+              "inverse-primary": "#c6c6c6",
+              "on-secondary-container": "#001551",
+              "tertiary-fixed-dim": "#0039b3",
+              "on-background": "#1a1c1c",
+              "on-primary-fixed": "#ffffff",
+              "surface-container-low": "#f3f3f3",
+              "surface-container-highest": "#e2e2e2",
+              "on-tertiary-container": "#ffffff",
+              "outline": "#777777",
+              "on-surface-variant": "#474747",
+              "outline-variant": "#c6c6c6",
+              "primary-container": "#3b3b3b",
+              "on-secondary-fixed": "#001551",
+              "secondary": "#004dea",
+              "surface-container-high": "#e8e8e8"
+            },
+            fontFamily: {
+              "headline": ["Inter", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+              "label": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9f9; overflow-x: hidden; }
+        .hero-gradient { background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 40%); }
+        .hud-underline { position: relative; }
+        .hud-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #004dea;
+        }
+        .glass-nav {
+            background: rgba(249, 249, 249, 0.8);
+            backdrop-filter: blur(24px);
+        }
+        .dashed-box { background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23000000' stroke-width='1' stroke-dasharray='8%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e"); }
+        ::-webkit-scrollbar { width: 4px; height: 2px; }
+        ::-webkit-scrollbar-thumb { background: #000; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface text-primary antialiased">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Shared Components ---
+
+        const Nav = () => {
+            const navigate = useNavigate();
+            const location = useLocation();
+
+            const isActive = (path) => location.pathname === path;
+
+            return (
+                <nav className="fixed top-0 w-full z-50 glass-nav border-b border-black/5 transition-colors duration-300">
+                    <div className="flex justify-between items-center w-full px-6 md:px-12 py-6 max-w-[1920px] mx-auto">
+                        <Link to="/" className="text-xl font-bold tracking-tighter text-primary uppercase">
+                            AURA FASHION
+                        </Link>
+                        
+                        <div className="hidden md:flex items-center space-x-12">
+                            <Link to="/men" className={`font-semibold tracking-tight uppercase text-sm hover:text-[#0055FF] transition-all ${isActive('/men') ? 'text-[#0055FF]' : 'text-primary opacity-80'}`}>MEN</Link>
+                            <Link to="/women" className={`font-semibold tracking-tight uppercase text-sm hover:text-[#0055FF] transition-all ${isActive('/women') ? 'text-[#0055FF]' : 'text-primary opacity-80'}`}>WOMEN</Link>
+                            <Link to="/kids" className={`font-semibold tracking-tight uppercase text-sm hover:text-[#0055FF] transition-all ${isActive('/kids') ? 'text-[#0055FF]' : 'text-primary opacity-80'}`}>KIDS</Link>
+                            <Link to="/showroom" className={`font-semibold tracking-tight uppercase text-sm hover:text-[#0055FF] transition-all ${isActive('/showroom') ? 'text-[#0055FF]' : 'text-primary opacity-80'}`}>SHOWROOM</Link>
+                        </div>
+
+                        <div className="flex items-center gap-6">
+                            <Link to="/profile" className="flex items-center gap-2 group">
+                                <span className={`material-symbols-outlined text-primary group-hover:text-[#0055FF] ${isActive('/profile') ? 'text-[#0055FF]' : ''}`}>person</span>
+                                <span className="hidden lg:block font-bold tracking-widest text-[10px] text-primary uppercase">MY AURA</span>
+                            </Link>
+                            <button className="relative group">
+                                <span className="material-symbols-outlined text-primary group-hover:text-[#0055FF]">shopping_bag</span>
+                                <span className="absolute -top-1 -right-1 bg-[#0055FF] text-[8px] text-white w-3 h-3 rounded-full flex items-center justify-center font-bold">3</span>
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+        const Footer = () => (
+            <footer className="bg-surface border-t border-black/10 py-12 px-6 md:px-12">
+                <div className="max-w-[1920px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-black/60">
+                        © AURA FASHION 2024. ALL RIGHTS RESERVED.
+                    </div>
+                    <div className="flex flex-wrap justify-center gap-8">
+                        {['Privacy', 'Terms', 'Accessibility', 'Contact'].map(link => (
+                            <a key={link} href="#" className="text-[10px] font-bold uppercase tracking-widest text-black/60 hover:text-[#0055FF] underline decoration-1 underline-offset-4 opacity-80 hover:opacity-100 transition-all">
+                                {link}
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            </footer>
+        );
+
+        // --- Screens ---
+
+        const HomePage = () => {
+            const navigate = useNavigate();
+            return (
+                <main>
+                    <section className="relative h-screen w-full overflow-hidden bg-black">
+                        <div className="absolute inset-0 z-0">
+                            <img alt="Hero" className="w-full h-full object-cover object-center brightness-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC85wws-LIs9fOd58y26myIDH0MWcXdGYtIK3YPjbwCxZhV708Bzk14QjosATCTImwDPD4sPJjpPCf9szT95gNCmOaijH8QOQH9uIW_JCC33wDl8dManCBOCQOB-YvjwSE1xdruy32w3W0-dgkkY5Pku7qSOWFet3mNtjZeYPQN34KkoCw88bEUI4xTp28d_qKlPqPtwS-SUWpQPwn3pwqwiuDkqWlsABapT7UhOK0U5chEJwZ7AlMejA2lHdX6T5ku-SgCXbrRRr65" />
+                            <div className="absolute inset-0 hero-gradient"></div>
+                        </div>
+                        <div className="relative z-10 h-full w-full flex flex-col justify-between px-12 pb-20 pt-32 max-w-[1920px] mx-auto text-white">
+                            <div className="flex-grow"></div>
+                            <div className="flex flex-col md:flex-row justify-between items-end gap-12">
+                                <div className="max-w-2xl">
+                                    <h1 className="text-[3.5rem] font-bold leading-[1.1] tracking-[-0.02em]">
+                                        SEE YOURSELF IN <br />
+                                        <span className="text-[#0055FF]">FUTURE FASHION.</span>
+                                    </h1>
+                                </div>
+                                <div className="flex flex-col items-center md:items-end gap-12">
+                                    <button onClick={() => navigate('/showroom')} className="bg-primary text-white border border-white/20 px-12 py-6 text-[0.6875rem] font-bold tracking-[0.2em] uppercase transition-all duration-300 hover:bg-[#0055FF] hover:border-[#0055FF] hover:scale-105 active:scale-95">
+                                        START YOUR AI FITTING
+                                    </button>
+                                    <div className="flex flex-col items-center gap-4 opacity-60">
+                                        <span className="text-[0.6875rem] font-bold uppercase tracking-widest">SCROLL</span>
+                                        <span className="material-symbols-outlined animate-bounce">keyboard_double_arrow_down</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section className="bg-surface py-32 px-12 max-w-[1920px] mx-auto">
+                        <h2 className="text-[1.75rem] font-bold tracking-tight text-primary uppercase mb-24">YOUR ONLINE FITTING ROOM IN 3 STEPS</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-24">
+                            {[
+                                { step: '1. UPLOAD', desc: 'Take a full-body photo. Neutral background works best.', icon: 'photo_camera' },
+                                { step: '2. GENERATE', desc: 'AI creates your digital avatar with exact proportions.', icon: 'body_system' },
+                                { step: '3. TRY-ON', desc: 'Mix & match cart items instantly on your silhouette.', icon: 'checkroom' }
+                            ].map(item => (
+                                <div key={item.step} className="flex flex-col gap-12 group">
+                                    <div className="w-16 h-16 flex items-center justify-center bg-surface-container-low text-primary group-hover:text-[#0055FF] transition-colors">
+                                        <span className="material-symbols-outlined text-4xl">{item.icon}</span>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <h3 className="font-bold tracking-widest uppercase">{item.step}</h3>
+                                        <p className="text-on-surface-variant max-w-[300px] leading-relaxed">{item.desc}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                </main>
+            );
+        };
+
+        const ProductGrid = ({ title, sub, products }) => (
+            <section className="bg-surface py-24 px-10 max-w-[1920px] mx-auto">
+                <div className="flex justify-between items-end mb-20">
+                    <div>
+                        <h2 className="text-sm font-bold uppercase tracking-widest text-[#0055FF] mb-2">{sub}</h2>
+                        <h3 className="text-4xl font-bold tracking-tighter uppercase">{title}</h3>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+                    {products.map((p, i) => (
+                        <div key={i} className="group cursor-pointer">
+                            <div className="aspect-[3/4] overflow-hidden bg-surface-container-low mb-6 relative">
+                                <img className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" src={p.img} alt={p.name} />
+                                {p.badge && <div className="absolute top-4 left-4 bg-white px-2 py-1 text-[10px] font-bold tracking-widest text-primary uppercase">{p.badge}</div>}
+                            </div>
+                            <div className="flex flex-col space-y-1">
+                                <span className="text-[10px] font-bold text-outline uppercase tracking-widest">{p.cat}</span>
+                                <div className="flex justify-between items-start">
+                                    <h4 className="text-sm font-medium tracking-tight uppercase">{p.name}</h4>
+                                    <span className="text-sm font-bold">${p.price}</span>
+                                </div>
+                                <button className="text-[#0055FF] text-[10px] font-bold uppercase tracking-widest pt-4 opacity-0 group-hover:opacity-100 transition-opacity text-left">
+                                    <span className="hud-underline">ADD TO CART</span>
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+        );
+
+        const MenPage = () => (
+            <main className="pt-20">
+                <header className="relative h-[819px] bg-black">
+                    <img className="w-full h-full object-cover object-top opacity-70 grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmUTORF_2wuKpMxjKRLAycutd2yP0VfOV7Ymsaw5njH6cyas0_M3MBFfIg5NMFIUL9ANgOEghrjGjDcolv4z20qXtwuYV4coaKxvPs_zmomttHNmVyVf52t71gnylAWHgd9W4CPI11lCeJ2NCWHU38E3MTFBVGEAAHuNzAxBTUW_GmATCydfpQ1fO1u4IXey5jcMHhpuOOpaTjFxn2V7pgprxO4XhA-w7QJ396kA9c22r3KxrPFzA4AV-LZM5iWCrqaWfJCTcKEIex" />
+                    <div className="absolute inset-0 flex flex-col justify-center px-10">
+                        <span className="text-sm font-bold text-[#0055FF] uppercase tracking-[0.3em] mb-4">SS24 PREVIEW</span>
+                        <h1 className="text-white text-7xl font-bold tracking-tighter uppercase leading-none">THE WHITE<br/>COLLECTION</h1>
+                    </div>
+                </header>
+                <ProductGrid 
+                    title="Essential Gear" 
+                    sub="New Arrivals"
+                    products={[
+                        { name: 'Wool Overcoat', price: '1,250', cat: 'Outerwear', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBdIPsSgLedU1Aq7y4r6UG25fRI-nzOLHXTOixR-tD8X9Ey99jz8vJIqWznFwyNU2Q-GuOBTGDw88t7DDMeMv4j6TXrp58Kp2g-iRyQaaAUjX1GI1S2eyxnRYWuKeivT1wFpsvf4PrNBGEshE_me45fIZsID1yqgk632TSCe7eXWxqrFIjOoGaV9LAtuIcaBLNMaC6_4jSYhnLtkfltJD_O_JyPx-0JlisvIUSlB9dscPqO7EVz80mdfuFiRoXnLaMu7atmDU9zA0Qm', badge: 'New' },
+                        { name: 'Poplin Shirt', price: '380', cat: 'Shirts', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAv1fiIFJlPk65Q3W7GsLTPznuxA_9c09sjTUa6HDHJDYD_uvVy5XYPauxw-uTMJWmZy4bIKEXaYT35615AXzhJgVifTRvOMYnPo3L0yhDgzEhoK-aWlroxB8BF90EcRUcqB3W0X_b7F-Ga1hqqMV9IlfuHm9W8XqlFaESeXcC77ukxRXiY3fHVmEMTXN0vfMxz3ZmeMCDk-RfsMVSocYn80Rrou9MRka7CuUf90X4CCpvu4yChVt8RPIjHfk18L0qUrlncjkrgkYj2' },
+                        { name: 'Chelsea Boot', price: '620', cat: 'Footwear', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA_Bf__l_off53Vr1HfwS5U5rbI7loccPvoa7cNWIJFhZrybNPQ6jw2IS46ctJEXkLXSRI7ZbOgqnDqFK1eY6y09ObWCG8jVFnEq1_nN9urK4Gcz_WHju7L4u4O8vImVqZYu5M-_x6SY11p7LHg9woISaRVfQ1MKqPMw-k3LNNKt8A0nKRwvafri9xME0hHAPAJf57SQbp2eSDfKbA9j5GbHtzmC0wpgYPprUcJIvrKrb4vm4XStTCMg_Wz3AdL0sTwEK_rTg_dtQqa' },
+                        { name: 'Monolith Tux', price: '1,850', cat: 'Suits', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAPpJOANxQKKa9IWw2blH4az4vO5Pcp7KFs_BCliJhadEVf2_ZOCh0l47WZ_yzJpccTtZZ4vFpzuZtF9Q9_Wy2yQRPAjD4dU1dDmy6n9DRzydXkJngyy-4iIQUW5XJb2cXKXs571INTy-ZCOd7lA_iPlWWJTZv3EQn7vdTYjwIN9lwkim7hRRwGWQG2eDdp-BaxdEULy5oUlDYyFsvP5S2-o7UjTXsoBxxCqasMclXECNO7qDszrR5-9nwPcKbyS1LLT5FF2SSFhJ8f' }
+                    ]}
+                />
+            </main>
+        );
+
+        const WomenPage = () => (
+            <main className="pt-20">
+                <header className="relative h-[819px] flex flex-col md:flex-row items-center bg-surface-container-low overflow-hidden">
+                    <div className="w-full md:w-1/2 h-full">
+                        <img className="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8ww-Q3LBV5AnciowNbgOPkCv3GXwVG9ICVT9-3ca5dhYZX4iF3V_DDoUysWrqYvQm76AsAL9DqDBVdfnedbWhlqTQ2X8F05tN8qwpZ8EIdWyJv3c5JTg-24qyJ3EOKfblxirI-caeJH34ubALZfPQhP_b177HzjuhgoPrAeKdeb2IdU5zIZdU2SP9svT-6ZEwLH6BzLPHqid8mGszDtsThM7ciipCKQCnZQZoetyFlZyz2RnD701yDFY1g1dzgvNAPcH1OAHqFOoj" />
+                    </div>
+                    <div className="w-full md:w-1/2 px-10 md:px-24">
+                        <span className="text-[10px] font-bold text-[#0055FF] uppercase tracking-[0.3em] mb-4 block">SS24 WOMEN</span>
+                        <h1 className="text-[3.5rem] font-bold tracking-tighter uppercase leading-tight mb-8">THE NEW<br/>MINIMALISM</h1>
+                        <button className="bg-primary text-white px-12 py-5 font-bold uppercase text-[10px] tracking-widest hover:bg-[#0055FF] transition-all">Explore Collection</button>
+                    </div>
+                </header>
+                <ProductGrid 
+                    title="Silhouettes" 
+                    sub="Curated"
+                    products={[
+                        { name: 'Structured Blazer', price: '450', cat: 'Tailoring', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4h5Q5xtvqwB9p_1wLk549LFQNhxq3qk4RqVzY2CY-IbsFM7ZHKd3Z6gqoKmSezAX8JCSaEI_cOVk_FhHod3I0fe4L3VISAQYRs2CYjAdb5vcWQM7TJuZwiywVaGMzufmwer0yHFmO5xPT6b10zVx1CS9AZUb5bL5q5JzB7Nv7ErwF9raf6MHqoz2ndAoGNS2tCtYBaxvpfC2RVntRZctFQnhXaD8nEk_sOibNoPRgkdfIoRIPLLS77eODmZvdv8b22knfLm7kgAMX' },
+                        { name: 'Silk Slip Gown', price: '295', cat: 'Dresses', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC9MQz-VaMIf0tAjMCEjipmyYFx-SP6Wtpred9urBiDKSppTNyP9Z_ZnHDWsEtXi17hvhAQGndR_vrIayylx2YJoNwDwWYTpcCpECVjI6tFVDylcZzELsdM6E80OuH_vxYZMhmmkmO729tXSmuc3Cizuw-p_ppVu5cui8GRfKebDv1jBMYuSVj62uax-8UT-nYzPX6Lnywc7l_sHVm-dA9wflcHLDEH9MEOrejx9b-6HLSz7rm6REVinr8P4N2eNibl5fzJY3oHEkIv' },
+                        { name: 'Cashmere Mock Neck', price: '320', cat: 'Knitwear', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD1nVH41kVlLjbCW2flnlgArgFmkyxd17VthyR1MBevn5JVIHXXLm9j7a-F1msV2EE12ZmtHbWgUES-CCrrG7_LcjCzqro_Pp32vukJiS0lZJnQTnYJJANZQyeeiQSKza7TvdYRhvnbwLK07T4eMddESO58N3Sr-c7i4DLwX6nW_rfZHs_iP60GdwxqD77sktBbueXEG4M0VsvpG05hKsRzlHsrLpzVbHVq4KXpmUw0BLYL_PblYNSgz4gmDL0uTx5hLPUD9rpC7icZ' },
+                        { name: 'Ankle Boot', price: '580', cat: 'Footwear', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCtYGG3FPOoLRwkS3MriYGS7S1oXIZrA1w6XNS8tizPduz5h4TFXA-UlLfA_6AZmj57eI9Foye_blm1lTx8WMgj8FRSYFfWNcN0-9I6Y6n1X-FF5mfCy4q2sPtOLn0CcSGbgzVPCDn5h4SSl1NIXoGD-K0k_KMgER5bENMaZghc0iYI83NughFLOWimvyd-4V7O1ppbbqjfMhNw-30EQz8KltVgzpSlImL8psT4e4ZchQ8YamRsvF4G0-FlvSwdLX54Ub4JcML3nVAu' }
+                    ]}
+                />
+            </main>
+        );
+
+        const KidsPage = () => (
+            <main className="pt-20">
+                <header className="relative h-[819px] flex flex-col justify-center px-10 bg-surface-container overflow-hidden">
+                    <img className="absolute inset-0 w-full h-full object-cover object-center opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMMrCIv22G7Z6zaNAO88sU4vNUq23ENHukmeRYKrucOASHVclfO54WO2PGO-6ZDik8gUdsCCFacXG-duun_UvJD4cpWBIIsPnaFIY8KhGf8I9ndHWrBVC7NKjwQ-oAqxxt1WYISxBvUEJhffZjhgsTkZar65UHOsccny8F1TiqduRUw8xtGf2K4OzE9IR_QAQ5tMggtZz8oGixawMdM-jvOVCjNMu2NtNUY9f2xET1uNhMDliqDsAjnhZcoVaD4S711CaS3WX16VYT" />
+                    <div className="relative z-10">
+                        <span className="text-[10px] font-bold text-[#0055FF] uppercase tracking-[0.3em] mb-4 block">KIDS SS24</span>
+                        <h1 className="text-[4rem] font-bold italic tracking-tighter uppercase leading-none text-primary">Generation<br/>Future</h1>
+                        <button className="mt-8 bg-primary text-white px-12 py-5 font-bold uppercase text-[10px] tracking-widest hover:bg-[#0055FF] transition-all">Shop Junior</button>
+                    </div>
+                </header>
+                <ProductGrid 
+                    title="Junior Future" 
+                    sub="Ages 4-12"
+                    products={[
+                        { name: 'Cyber-Shell Parka', price: '145', cat: 'Outerwear', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBrAdt-y2VvIHgRu82g-qHMOZip_a1J-u6lxoKUA9DK6fwoWAMHgGGzO8gqzY87q78SGDLAXlOBfHjpjGqehflGriH_MeH5-_AXZpQMFBaXGIw0-ADYxp5j1A4LycHpLWv64gjjbqjs27BpjAvBLxw2YNek48btGklF3VT6_rGVday0Q4vswXx1PUy4spLzUZW_fJ0vllbPE-l-FF4gTYYPyu9YY_k7GXlzfdSEc4K07rVoATvhwrJDv39DnW7PgUj3JC8wxiUhSFH2', badge: 'New' },
+                        { name: 'Flux Knit Set', price: '85', cat: 'Knitwear', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBA14cslzEWfAcJ2_3TU0CFth8p0MwECka8Fmk1JkqymLt_6YC9ElujPe76Gr75XMePFtdvOcO_Nen4sUCtZOWMgWJhHDXctlnMO1rUocTM8p23DR3BgD-czf3LBFAWp5He6xCk9BLCp_A0CopZPaEXrvzWKVIbCvjK1Swp2B372IjxYNqmM1iU2nYYv_XtsVx4Ee_at4k971iogPE2ATIixG9QJ8kqysxH2nvrDM5A1Dke2FIj1HuWj1ko4kVTUyW7mVLjEG9N7rQY' },
+                        { name: 'Ion Graphic Tee', price: '45', cat: 'Basics', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB_Ai3U8XvkT13nUHdc7tCWypG_JJw4iTafQaKyReym_Tr83ae4VJ4WtX37Tv8hkZ_ShVOBy9t2L5EoXueGA1KMqJ0EuUE3otCcnfHz0JfVREP6qPJcI2tSasGfba47cpFhN1yaCdI2osXPfU_cTEP-DeqnyPPPllS1KYKBvoEDjlraPqMWuOHujouUNd1dF0XCnsO-AfnRqfWBL6iYfaWARzof7bhpu_Q2F6H4EQZoO9LNm1BWZZEOAbkhi2SK0CNKjoIKSxwQ5mPc' },
+                        { name: 'Aura Gravity Sneaker', price: '190', cat: 'Footwear', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBD9pX40fcSAulWEYls3qcawtYeCU8LSr99A-lrDVqRp_dZ5KdWY9h_LweMzjzeXeiS_0KFyBmuhTNxS1pR0ugcuQJgI4eDA8A4cR0hxOq3zeDMwmr-6N072Sl7B5JzoVxG96TL6F0ALTbgwr06UgriOBjI7r8YJBM-aqCK3Q8kH0JxZXmbwhf5aR52YMo4018t1cvDdivUdnpCE6pQeu_vNZNK9dK_ncrd_QKkx27-VnYCwP2n3f7xXsDNaNThHe4nG_sv4RkqVcPu', badge: 'Exclusive' }
+                    ]}
+                />
+            </main>
+        );
+
+        const ShowroomPage = () => (
+            <main className="pt-24 min-h-screen flex flex-col md:flex-row">
+                <section className="w-full md:w-1/2 bg-surface-container-low p-12 lg:p-24 flex flex-col justify-center">
+                    <span className="text-[#0055FF] font-bold text-[10px] uppercase tracking-widest mb-4 block">System Module 01</span>
+                    <h1 className="text-5xl font-bold tracking-tight text-primary leading-none mb-16 uppercase">CREATE YOUR<br/>AVATAR</h1>
+                    <div className="dashed-box group cursor-pointer aspect-square w-full flex flex-col items-center justify-center transition-all duration-500 hover:bg-surface-container mb-12 max-w-md">
+                        <span className="material-symbols-outlined text-4xl mb-4 text-black/20 group-hover:text-[#004dea]">add_a_photo</span>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Click to upload your full-body photo</p>
+                    </div>
+                    <button className="w-full max-w-md py-6 bg-primary text-white font-bold uppercase tracking-[0.2em] text-[10px] transition-all hover:bg-[#0055FF]">
+                        CONFIRM AVATAR
+                    </button>
+                </section>
+                <section className="w-full md:w-1/2 bg-white flex items-center justify-center border-l border-black/5 p-12 relative overflow-hidden">
+                    <div className="relative h-[600px] w-full max-w-md">
+                        <img className="w-full h-full object-contain grayscale opacity-30 mix-blend-multiply" src="https://tse3-mm.cn.bing.net/th/id/OIP-C._h1lkjzSrIvawJV5rrhrIQHaKR?w=118&h=180&c=7&r=0&o=7&pid=1.7&rm=1" />
+                        <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                            <div className="flex justify-between">
+                                <div className="flex items-center gap-2"><span className="w-2 h-2 bg-[#004dea] rounded-full animate-pulse"></span><span className="text-[10px] font-bold text-[#004dea] uppercase">AI CALIBRATION ACTIVE</span></div>
+                                <span className="text-[10px] font-mono text-black/40">v4.0.2-BETA</span>
+                            </div>
+                            <div className="flex justify-center">
+                                <div className="px-8 py-4 bg-white/40 backdrop-blur-xl border border-[#004dea]/20 flex flex-col items-center">
+                                    <span className="material-symbols-outlined text-[#004dea] mb-2">styler</span>
+                                    <p className="text-[10px] font-bold tracking-widest uppercase text-[#004dea]">Waiting for Clothes...</p>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 border-t border-black/5 pt-4">
+                                <div><span className="block text-[8px] uppercase opacity-40">X-RIGIDITY</span><span className="text-xs font-mono">88.4%</span></div>
+                                <div><span className="block text-[8px] uppercase opacity-40">Y-MAPPING</span><span className="text-xs font-mono">92.1%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <aside className="fixed bottom-0 left-0 w-full glass-nav z-40 md:pl-12 h-24 border-t border-black/5 flex items-center justify-between px-12">
+                    <div className="text-[8px] font-bold uppercase tracking-widest opacity-40 border-r border-black/5 pr-8">WARDROBE<br/>QUEUE</div>
+                    <div className="flex-1 flex gap-8 px-8 overflow-x-auto no-scrollbar">
+                        {['ARCHIVE TEE', 'RAW DENIM', 'TECH SHELL', 'CORE RUNNER'].map(item => (
+                            <div key={item} className="flex-shrink-0 flex items-center gap-2 opacity-40 hover:opacity-100 cursor-pointer transition-opacity">
+                                <div className="w-12 h-16 bg-surface-container"></div>
+                                <span className="text-[8px] font-bold uppercase">{item}</span>
+                            </div>
+                        ))}
+                    </div>
+                    <button className="flex items-center gap-4 text-primary group">
+                        <span className="text-[10px] font-bold uppercase tracking-widest group-hover:text-[#0055FF]">CHECKOUT</span>
+                        <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
+                </aside>
+            </main>
+        );
+
+        const ProfilePage = () => (
+            <main className="pt-32 pb-24 px-12 max-w-[1920px] mx-auto">
+                <header className="mb-24 flex flex-col md:flex-row items-end justify-between gap-12">
+                    <div className="flex items-center gap-12">
+                        <div className="w-48 h-48 bg-surface-container border border-outline-variant/10 overflow-hidden relative">
+                            <img alt="Profile" className="w-full h-full object-cover grayscale contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzjujRjHc-QVOY8J-d0Iv5E7ABVO8SJBPdSB0ZPP2S8ZHKQD49C5mOA-7BZ9r5tsOsdAQ9TnkNYwk5Ih-Uk0G6CudW2KNeW6IMsUaOWgFK02k1W8X_lAU4kXfXS5J4zau6qS2xB_E6n7QTWnsnNK-iJ34R-PQiG13WysmWy3BXPx77RECVaujjHzsfIbYxeBdEiVcUv146YIPeFvTDGJKcf-w_mXdq9aqdRcenNUoDZ-YlF47UnYF-zWZnf1vwKhU9X9oO1h8q2bwV"/>
+                            <div className="absolute bottom-0 right-0 bg-[#004dea] px-3 py-1 text-[8px] font-black text-white uppercase tracking-widest">VERIFIED</div>
+                        </div>
+                        <div>
+                            <h1 className="text-[4rem] font-bold tracking-tighter leading-none mb-2 uppercase">LEXI VANCE</h1>
+                            <p className="text-[#004dea] font-bold text-[10px] tracking-[0.3em] uppercase">PREMIUM MEMBER SINCE 2022</p>
+                        </div>
+                    </div>
+                    <div className="text-right hidden md:block opacity-40">
+                        <span className="block text-[10px] font-bold uppercase tracking-widest mb-1">LOCAL TIME</span>
+                        <span className="text-2xl font-light tracking-tighter uppercase">14:42 GMT-5</span>
+                    </div>
+                </header>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-24">
+                    <div className="lg:col-span-4 space-y-16">
+                        <section>
+                            <h2 className="text-xl font-bold uppercase mb-8 border-b border-black/5 pb-4">Identity</h2>
+                            <div className="space-y-6">
+                                <div><label className="text-[8px] font-bold opacity-40 uppercase tracking-widest block mb-2">EMAIL</label><p className="font-medium">lexi.vance@studio-aura.com</p></div>
+                                <div><label className="text-[8px] font-bold opacity-40 uppercase tracking-widest block mb-2">STATUS</label><p className="font-medium text-[#004dea] uppercase">ACTIVE HUD-L3</p></div>
+                            </div>
+                        </section>
+                        <section>
+                            <h2 className="text-xl font-bold uppercase mb-8 border-b border-black/5 pb-4">Saved Nodes</h2>
+                            <div className="bg-surface-container-low p-8 relative">
+                                <h3 className="font-bold text-xs uppercase mb-4">Primary Studio</h3>
+                                <p className="text-xs opacity-60 uppercase leading-relaxed">742 Mercer Street, SoHo, NY 10012</p>
+                            </div>
+                        </section>
+                    </div>
+                    <div className="lg:col-span-8 bg-white p-12">
+                        <h2 className="text-2xl font-bold uppercase border-b border-black pb-8 mb-12">Active Manifest (3)</h2>
+                        <div className="space-y-12">
+                            {[
+                                { name: 'Monolith Wool Overcoat', price: '1,240.00', sku: '009-X-BLCK', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCmtyQwA1lWLjNfgnk-wH9orFDvsjfkzg9ZkT3Z2GWg3WRb8CO1AYfK1-3YBibIBV-kw4uvrv3n3iBWJ1-rw_Nd2CiGt1q-MxrrXJVOAO4WkXpMFYjZpsXYfWg4WnEwbNxxO14uzWFfmA194ZZzZXFefpMbKMO666r9DdgMuWN8mt-jwufZFDAegmGyYvSMSSnfBANCD-ccy4YlkDAAv0a5VCC-NMCWUwp3GgMVlqF_YCRJBA_lFzozCPlyrB8aIuM3RpoOGy_JpO5z' },
+                                { name: 'Archive Cashmere Knit', price: '860.00', sku: '042-S-BONE', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB31iqpEWCD2MWPPlGqp_wccb9JbnBjchqehlBHLx3M6uHDztC7wPNgTMW_dkIsC5uKqwEufic3Eb_qJcv9wbvQQ_tzwhHVJOqY2ii7eo6KtqJFexXQ9d8GS2hk3oAdywZNOgLU2li7SuG_0L1m7CBfvAHd3eua3rleKi8yvVRQnoRjL3t4mx0tlhUmP1FBtQ48JC4WzxzIBhQ1AFJFI7GzXib36Hpyh2Z3Ckl8ChiOSFp_GvFBkJkCiCsGP6wkv2BU8MYLdSejHbOS' }
+                            ].map(item => (
+                                <div key={item.name} className="flex gap-12 group">
+                                    <div className="w-48 aspect-[3/4] overflow-hidden"><img className="w-full h-full object-cover grayscale" src={item.img} /></div>
+                                    <div className="flex-1 flex flex-col justify-between py-2">
+                                        <div className="flex justify-between items-start">
+                                            <div><h3 className="text-xl font-bold uppercase">{item.name}</h3><p className="text-[8px] opacity-40">{item.sku}</p></div>
+                                            <p className="text-xl font-medium">${item.price}</p>
+                                        </div>
+                                        <div className="flex justify-between items-end border-t border-black/5 pt-8">
+                                            <div className="flex gap-8"><span className="text-[10px] uppercase font-bold opacity-40">Qty: 1</span><span className="text-[10px] uppercase font-bold opacity-40">Size: M</span></div>
+                                            <button className="text-[10px] uppercase font-bold opacity-40 hover:opacity-100">Remove</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="mt-12 pt-12 border-t-2 border-black flex justify-between items-end">
+                            <div><span className="text-[8px] opacity-40 uppercase">Total</span><p className="text-4xl font-bold">$2,100.00</p></div>
+                            <button className="bg-primary text-white px-16 py-6 font-bold uppercase text-xs tracking-widest hover:bg-[#004dea]">INITIALIZE CHECKOUT</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        );
+
+        // --- App Component ---
+
+        const App = () => {
+            return (
+                <div className="flex flex-col min-h-screen">
+                    <Nav />
+                    <div className="flex-grow">
+                        <Routes>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/men" element={<MenPage />} />
+                            <Route path="/women" element={<WomenPage />} />
+                            <Route path="/kids" element={<KidsPage />} />
+                            <Route path="/showroom" element={<ShowroomPage />} />
+                            <Route path="/profile" element={<ProfilePage />} />
+                        </Routes>
+                    </div>
+                    <Footer />
+                </div>
+            );
+        };
+
+        const container = document.getElementById('root');
+        const root = createRoot(container);
+        root.render(
+            <MemoryRouter>
+                <App />
+            </MemoryRouter>
+        );
+    </script>
+<script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.19/libs/cn/index.js"></script>
+<script>
+  new CozeWebSDK.WebChatClient({
+    config: {
+      bot_id: '7621027039558451209',
+    },
+    componentProps: {
+      title: 'Coze',
+    },
+    auth: {
+      type: 'token',
+      token: 'pat_r8ecZp2ltenxqdSoPk53gWG7SMfLPsdhGVFdu6vTcdPfas2yCsHb7T3Fjo4QI24c',
+      onRefreshToken: function () {
+        return 'pat_r8ecZp2ltenxqdSoPk53gWG7SMfLPsdhGVFdu6vTcdPfas2yCsHb7T3Fjo4QI24c'
+      }
+    }
+  });
+</script>
+</body>
+</html>
